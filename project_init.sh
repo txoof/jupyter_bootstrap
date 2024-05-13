@@ -2,6 +2,7 @@
 
 # create a virtual environment for a project and install the dependencies
 
+VERSION='0.1.0_2024.04.13'
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 PROJECT_DIR=$(dirname $SCRIPT_DIR)
 PROJECT_NAME=$(basename $PROJECT_DIR)
@@ -57,6 +58,9 @@ function abort {
 
 function Help {
   echo "
+  jupyter_bootstrap project_init.sh 
+  v$VERSION
+
   Create a development environment for this project
 
   usage:
@@ -65,9 +69,12 @@ function Help {
   options:
   -c: create the virtual environment
   -j: create the virtual environment and add jupyter kernel
-  -h: This help screen
+  -t: install jupytext and add configuration file for converting .ipynb to .py
   -p: purge the virtual environment and clean up kernel specs
-  --info: virtual environment information
+  -i: virtual environment information
+  -v: version information
+  -h: This help screen
+
 
 "
 exit 0
@@ -201,7 +208,7 @@ JUPYTER=0
 JUPYTEXT=0
 FORCE=0
 
-while getopts ":hcfjpti" opt; do
+while getopts ":hcfjptiv" opt; do
   case ${opt} in
     h )
       Help
@@ -225,6 +232,10 @@ while getopts ":hcfjpti" opt; do
       ;;
     i )
       venv_info
+      exit 0
+      ;;
+    v )
+      echo "Version: $VERSION"
       exit 0
       ;;
     \? )
