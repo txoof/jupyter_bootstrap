@@ -7,6 +7,12 @@ PROJECT_DIR=$(dirname $SCRIPT_DIR)
 PROJECT_NAME=$(basename $PROJECT_DIR)
 ACTIVATE_SYMLINK="venv_activate"
 OS=$(uname -s)
+JUPYTEXT_CFG=$(cat <<'EOF'
+formats = "ipynb,py:light"
+EOF
+)
+JUPYTEXT_TOML='./jupytext.toml'
+
 case $OS in
     Linux)
         OS="linux"
@@ -154,6 +160,7 @@ function create_venv {
         echo "installing jupyter kernel for $venvName"
         if python -m ipykernel --version > /dev/null 2>&1; then
             python -m ipykernel install --user --name=$venvName
+        
         else
             echo "Jupyter (lab) is not installed in the current system environment."
             echo "try `pip install jupyterlab`"
@@ -172,15 +179,29 @@ function create_venv {
 }
 
 
-
+# install jupytext python module
+function install_jupytext {
+    if [[ $JUPYTEXT -eq 0 ]]; then
+        return
+    fi
+    if python3 -m pip show "jupytext" > /dev/null; then
+        echo "jupytext already installed"
+    else
+        echo "installing jupytext"
+        pip install jupytext
+    fi
+    echo "creating jupytext configuration file"
+    echo "$JUPYTEXT_CFG" > $JUPYTEXT_TOML
+}
 
 ## main program ##
 INSTALL=0
 PURGE=0
 JUPYTER=0
+JUPYTEXT=0
 FORCE=0
 
-while getopts ":hcfjpi" opt; do
+while getopts ":hcfjpti" opt; do
   case ${opt} in
     h )
       Help
@@ -194,6 +215,9 @@ while getopts ":hcfjpi" opt; do
     j )
       JUPYTER=1
       INSTALL=1
+      ;;
+    t )
+      JUPYTEXT=1
       ;;
     p )
       PURGE=1
@@ -210,8 +234,9 @@ while getopts ":hcfjpi" opt; do
   esac
 done
 
-if [[ $INSTALL -eq 0 ]] && [[ $PURGE -eq 0 ]]; then
+if [[ $INSTALL -eq 0 ]] && [[ $PURGE -eq 0 ]] && [[ $JUPYTEXT -eq 0 ]]; then
   Help
 fi
 
 create_venv
+install_jupytext
