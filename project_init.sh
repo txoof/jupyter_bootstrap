@@ -71,6 +71,7 @@ function Help {
   -j: create the virtual environment and add jupyter kernel
   -t: install jupytext and add configuration file for converting .ipynb to .py
   -p: purge the virtual environment and clean up kernel specs
+  -r [filename]: optional alternative requirements file to process
   -i: virtual environment information
   -v: version information
   -h: This help screen
@@ -127,10 +128,10 @@ function create_venv {
             source $VENV/bin/activate
             pip install --upgrade pip
             echo "Installing requirements"
-            if [ -f $PROJECT_DIR/requirements.txt ]; then
-                pip install -r $PROJECT_DIR/requirements.txt
+            if [ -f $PROJECT_DIR/$REQUIREMENTS ]; then
+                pip install -r $PROJECT_DIR/$REQUIREMENTS 
             else
-                echo "No requirements.txt file found in $PROJECT_DIR"
+                echo "$REQUIREMENTS file not found in $PROJECT_DIR"
             fi
             deactivate
 
@@ -207,8 +208,9 @@ PURGE=0
 JUPYTER=0
 JUPYTEXT=0
 FORCE=0
+REQUIREMENTS='requirements.txt'
 
-while getopts ":hcfjptiv" opt; do
+while getopts ":hcfjptivr:" opt; do
   case ${opt} in
     h )
       Help
@@ -229,6 +231,9 @@ while getopts ":hcfjptiv" opt; do
     p )
       PURGE=1
       INSTALL=0
+      ;;
+    r )
+      REQUIREMENTS=$OPTARG
       ;;
     i )
       venv_info
