@@ -2,7 +2,7 @@
 
 # create a virtual environment for a project and install the dependencies
 
-VERSION='0.1.0_2024.04.13'
+VERSION='0.1.1'
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 PROJECT_DIR=$(dirname $SCRIPT_DIR)
 PROJECT_NAME=$(basename $PROJECT_DIR)
@@ -46,7 +46,7 @@ PY_MINOR=$(echo "$PY_VERSION" | cut -d. -f2)
 # virtual environment name
 
 VENV_HASH=$(echo -n "$PROJECT_DIR" | $MD5 | cut -c1-5)
-VENV=$PROJECT_DIR/$PROJECT_NAME-$VENV_HASH
+VENV=$PROJECT_DIR/$PROJECT_NAME-VENV-$VENV_HASH
 
 function abort {
   # abort installation with message
@@ -64,7 +64,7 @@ function Help {
   Create a development environment for this project
 
   usage:
-  $ $0 [option]
+  $ $0 [options]
 
   options:
   -c: create the virtual environment
@@ -73,6 +73,7 @@ function Help {
   -p: purge the virtual environment and clean up kernel specs
   -r [filename]: optional alternative requirements file to process
   -i: virtual environment information
+  -f: force creation of virtual environment even if it exists
   -v: version information
   -h: This help screen
 
@@ -240,7 +241,7 @@ while getopts ":hcfjptivr:" opt; do
       exit 0
       ;;
     v )
-      echo "Version: $VERSION"
+      echo "$0 v$VERSION"
       exit 0
       ;;
     \? )
