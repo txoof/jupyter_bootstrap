@@ -1,3 +1,7 @@
+# Deprecated and no longer maintaned
+
+This script is no longer maintained and has been replaced with [pyenv_utilities](https://github.com/txoof/pyenv_utilities).
+
 # Jupyter Bootstrap
 
 Create a virtual environment in the current directory and create a Jupyter-lab kernel for that venv. Optionally setup [Jupytext](https://jupytext.readthedocs.io/en/latest/) to automatically convert Jupyter Lab `.ipynb` files into flat python `.py` files.
